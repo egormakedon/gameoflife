@@ -3,7 +3,9 @@ package com.ym.gameoflife.controller;
 import com.ym.gameoflife.entity.Cell;
 import com.ym.gameoflife.entity.CellFactory;
 import com.ym.gameoflife.entity.CellState;
+import com.ym.gameoflife.entity.Grid;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -89,5 +91,55 @@ public class GameOfLifeControllerTest {
       Arguments.of(deadCell, 4, false),
       Arguments.of(deadCell, 5, false)
     );
+  }
+
+  @Test
+  void test_iterate() {
+    //given
+    Grid grid = given_iterate_createAndGetGrid();
+    controller.setGrid(grid);
+
+    String expectedInitial = "00000\n00000\n01110\n00000\n00000\n";
+    String expectedAfterIteration1 = "00000\n00100\n00100\n00100\n00000\n";
+    String expectedAfterIteration2 = "00000\n00000\n01110\n00000\n00000\n";
+
+    //when & then
+    assertThat(grid.toPrintString()).isEqualTo(expectedInitial);
+
+    controller.iterate();
+    assertThat(grid.toPrintString()).isEqualTo(expectedAfterIteration1);
+
+    controller.iterate();
+    assertThat(grid.toPrintString()).isEqualTo(expectedAfterIteration2);
+  }
+
+  static Grid given_iterate_createAndGetGrid() {
+    return new Grid(5, List.of(
+      factory.make(0, 0, CellState.DEAD),
+      factory.make(0, 1, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD),
+      factory.make(0, 3, CellState.DEAD),
+      factory.make(0, 4, CellState.DEAD),
+      factory.make(1, 0, CellState.DEAD),
+      factory.make(1, 1, CellState.DEAD),
+      factory.make(1, 2, CellState.DEAD),
+      factory.make(1, 3, CellState.DEAD),
+      factory.make(1, 4, CellState.DEAD),
+      factory.make(2, 0, CellState.DEAD),
+      factory.make(2, 1, CellState.LIVE),
+      factory.make(2, 2, CellState.LIVE),
+      factory.make(2, 3, CellState.LIVE),
+      factory.make(2, 4, CellState.DEAD),
+      factory.make(3, 0, CellState.DEAD),
+      factory.make(3, 1, CellState.DEAD),
+      factory.make(3, 2, CellState.DEAD),
+      factory.make(3, 3, CellState.DEAD),
+      factory.make(3, 4, CellState.DEAD),
+      factory.make(4, 0, CellState.DEAD),
+      factory.make(4, 1, CellState.DEAD),
+      factory.make(4, 2, CellState.DEAD),
+      factory.make(4, 3, CellState.DEAD),
+      factory.make(4, 4, CellState.DEAD)
+    ));
   }
 }

@@ -18,10 +18,12 @@ public class Grid implements Mediator<Cell>, Printable {
 
   private final Cell[][] grid;
   private final Set<Cell> liveCells;
+  private final Set<Cell> pendingUpdateCells;
 
   public Grid(int n, Iterable<Cell> cells) {
     grid = new Cell[n][n];
     liveCells = new HashSet<>();
+    pendingUpdateCells = new HashSet<>();
     init(cells);
   }
 
@@ -37,6 +39,10 @@ public class Grid implements Mediator<Cell>, Printable {
 
   public Stream<Cell> streamOfLiveCells() {
     return liveCells.stream();
+  }
+
+  public Stream<Cell> streamOfPendingUpdateCells() {
+    return pendingUpdateCells.stream();
   }
 
   public Stream<Cell> streamOfNeighbourCellsFrom(Cell cell) {
@@ -104,6 +110,27 @@ public class Grid implements Mediator<Cell>, Printable {
 
   @Override
   public void notify(Cell sender, Event event) {
+    switch (event) {
+      case PENDING_UPDATE -> handlePendingUpdate(sender);
+      case COMMIT_UPDATE -> handleCommitUpdate(sender);
+      default -> throw new UnsupportedOperationException(String.format("Event=`%s` is not supported", event));
+    }
+  }
+
+  private void handlePendingUpdate(Cell cell) {
+    pendingUpdateCells.add(cell);
+  }
+
+  private void handleCommitUpdate(Cell cell) {
+    if (cell.isLive()) {
+      liveCells.add(cell);
+    } else if (cell.isDead()) {
+      liveCells.remove(cell);
+    }
+  }
+
+  public void flush() {
+    pendingUpdateCells.clear();
   }
 
   @Override
@@ -122,5 +149,9 @@ public class Grid implements Mediator<Cell>, Printable {
 
   Set<Cell> getLiveCells() {
     return Set.copyOf(liveCells);
+  }
+
+  Set<Cell> getPendingUpdateCells() {
+    return Set.copyOf(pendingUpdateCells);
   }
 }

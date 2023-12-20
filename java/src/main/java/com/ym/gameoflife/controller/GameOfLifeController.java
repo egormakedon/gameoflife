@@ -25,7 +25,7 @@ public class GameOfLifeController {
 
   private void doIteration() {
     prepareAndProcessCellsBeforeCommit();
-//    commitUpdate();
+    commitUpdate();
   }
 
   private void prepareAndProcessCellsBeforeCommit() {
@@ -61,6 +61,11 @@ public class GameOfLifeController {
     return Rule.UNDERPOPULATION.check(cell, numberOfLive)
       || Rule.OVERPOPULATION.check(cell, numberOfLive)
       || Rule.REPRODUCTION.check(cell, numberOfLive);
+  }
+
+  private void commitUpdate() {
+    grid.streamOfPendingUpdateCells().forEach(Cell::changeStateAndCommitUpdate);
+    grid.flush();
   }
 
   public void setGrid(Grid grid) {

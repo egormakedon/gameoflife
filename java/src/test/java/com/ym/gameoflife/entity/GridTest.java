@@ -1,5 +1,6 @@
 package com.ym.gameoflife.entity;
 
+import com.ym.gameoflife.util.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -135,5 +136,78 @@ public class GridTest {
 
     //then
     assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void test_notify_pendingUpdate() {
+    //given
+    List<Cell> input = List.of(
+      factory.make(0, 0, CellState.LIVE),
+      factory.make(0, 0, CellState.DEAD),
+      factory.make(0, 1, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD)
+    );
+    Set<Cell> expected = Set.of(
+      factory.make(0, 0, CellState.LIVE),
+      factory.make(0, 1, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD)
+    );
+
+    //when
+    input.forEach(cell -> grid.notify(cell, Event.PENDING_UPDATE));
+    Set<Cell> actual = grid.getPendingUpdateCells();
+
+    //then
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void test_notify_commitUpdate() {
+    //given
+    List<Cell> input = List.of(
+      factory.make(0, 0, CellState.DEAD),
+      factory.make(1, 1, CellState.DEAD),
+      factory.make(0, 1, CellState.LIVE),
+      factory.make(2, 0, CellState.LIVE)
+    );
+    Set<Cell> expected = Set.of(
+      factory.make(0, 1, CellState.LIVE),
+      factory.make(2, 0, CellState.LIVE),
+      factory.make(2, 2, CellState.LIVE)
+    );
+
+    //when
+    input.forEach(cell -> grid.notify(cell, Event.COMMIT_UPDATE));
+    Set<Cell> actual = grid.getLiveCells();
+
+    //then
+    assertThat(actual).isEqualTo(expected);
+  }
+
+  @Test
+  void test_flush() {
+    //given
+    List<Cell> input = List.of(
+      factory.make(0, 0, CellState.LIVE),
+      factory.make(0, 0, CellState.DEAD),
+      factory.make(0, 1, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD)
+    );
+    Set<Cell> expected = Set.of(
+      factory.make(0, 0, CellState.LIVE),
+      factory.make(0, 1, CellState.DEAD),
+      factory.make(0, 2, CellState.DEAD)
+    );
+
+    //when & then
+    input.forEach(cell -> grid.notify(cell, Event.PENDING_UPDATE));
+    Set<Cell> actual = grid.getPendingUpdateCells();
+    assertThat(actual).isEqualTo(expected);
+
+    //when & then
+    grid.flush();
+    assertThat(grid.getPendingUpdateCells()).isEmpty();
   }
 }

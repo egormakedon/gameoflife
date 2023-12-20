@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Yahor Makedon
  */
 public class GridTest {
-  CellFactory factory = CellFactory.getInstance();
+  static CellFactory factory = CellFactory.getInstance();
 
   Grid grid;
 

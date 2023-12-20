@@ -1,5 +1,6 @@
 package com.ym.gameoflife.entity;
 
+import com.ym.gameoflife.util.Event;
 import com.ym.gameoflife.util.Mediator;
 import com.ym.gameoflife.util.Printable;
 
@@ -38,9 +39,9 @@ public class Cell implements Printable {
     return state.isDead();
   }
 
-  public void changeStateAndNotify() {
+  public void changeStateAndCommitUpdate() {
     changeState();
-    notifyMediator();
+    notifyMediator(Event.COMMIT_UPDATE);
   }
 
   private void changeState() {
@@ -51,9 +52,13 @@ public class Cell implements Printable {
     }
   }
 
-  private void notifyMediator() {
+  public void pendingUpdate() {
+    notifyMediator(Event.PENDING_UPDATE);
+  }
+
+  private void notifyMediator(Event event) {
     if (mediator != null) {
-      mediator.notify(this);
+      mediator.notify(this, event);
     }
   }
 

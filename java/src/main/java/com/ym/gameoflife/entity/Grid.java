@@ -1,5 +1,6 @@
 package com.ym.gameoflife.entity;
 
+import com.ym.gameoflife.util.Event;
 import com.ym.gameoflife.util.Mediator;
 import com.ym.gameoflife.util.Printable;
 
@@ -7,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Yahor Makedon
@@ -33,8 +35,75 @@ public class Grid implements Mediator<Cell>, Printable {
     });
   }
 
+  public Stream<Cell> streamOfLiveCells() {
+    return liveCells.stream();
+  }
+
+  public Stream<Cell> streamOfNeighbourCellsFrom(Cell cell) {
+    return Stream.of(
+      getTopLeftCellFrom(cell),
+      getTopCellFrom(cell),
+      getTopRightCellFrom(cell),
+      getLeftCellFrom(cell),
+      getRightCellFrom(cell),
+      getBottomLeftCellFrom(cell),
+      getBottomCellFrom(cell),
+      getBottomRightCellFrom(cell)
+    );
+  }
+
+  private Cell getTopLeftCellFrom(Cell cell) {
+    return getCell(cell.i-1, cell.j-1);
+  }
+
+  private Cell getTopCellFrom(Cell cell) {
+    return getCell(cell.i-1, cell.j);
+  }
+
+  private Cell getTopRightCellFrom(Cell cell) {
+    return getCell(cell.i-1, cell.j+1);
+  }
+
+  private Cell getLeftCellFrom(Cell cell) {
+    return getCell(cell.i, cell.j-1);
+  }
+
+  private Cell getRightCellFrom(Cell cell) {
+    return getCell(cell.i, cell.j+1);
+  }
+
+  private Cell getBottomLeftCellFrom(Cell cell) {
+    return getCell(cell.i+1, cell.j-1);
+  }
+
+  private Cell getBottomCellFrom(Cell cell) {
+    return getCell(cell.i+1, cell.j);
+  }
+
+  private Cell getBottomRightCellFrom(Cell cell) {
+    return getCell(cell.i+1, cell.j+1);
+  }
+
+  private Cell getCell(int i, int j) {
+    i = checkAndGetCorrectIndex(i);
+    j = checkAndGetCorrectIndex(j);
+    return grid[i][j];
+  }
+
+  int checkAndGetCorrectIndex(int index) {
+    if (index >= 0 && index < grid.length) {
+      return index;
+    } else if (index == -1) {
+      return grid.length - 1;
+    } else if (index == grid.length) {
+      return 0;
+    } else {
+      throw new IllegalArgumentException(String.format("Provided index=`%d` is incorrect", index));
+    }
+  }
+
   @Override
-  public void notify(Cell sender) {
+  public void notify(Cell sender, Event event) {
   }
 
   @Override

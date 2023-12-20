@@ -1,5 +1,6 @@
 package com.ym.gameoflife.entity;
 
+import com.ym.gameoflife.util.Event;
 import com.ym.gameoflife.util.Mediator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,37 +29,37 @@ public class CellTest {
   }
 
   @Test
-  void test_changeStateAndNotify_liveToDead() {
+  void test_changeStateAndCommitUpdate_liveToDead() {
     //given
     CellState expected = CellState.DEAD;
-    doNothing().when(mediatorMock).notify(liveCell);
+    doNothing().when(mediatorMock).notify(liveCell, Event.COMMIT_UPDATE);
 
     //when
-    liveCell.changeStateAndNotify();
+    liveCell.changeStateAndCommitUpdate();
     CellState actual = liveCell.getState();
 
     //then
     assertThat(actual).isSameAs(expected);
 
     //verify
-    verify(mediatorMock, times(1)).notify(liveCell);
+    verify(mediatorMock, times(1)).notify(liveCell, Event.COMMIT_UPDATE);
   }
 
   @Test
-  void test_changeStateAndNotify_deadToLive() {
+  void test_changeStateAndCommitUpdate_deadToLive() {
     //given
     CellState expected = CellState.LIVE;
-    doNothing().when(mediatorMock).notify(deadCell);
+    doNothing().when(mediatorMock).notify(deadCell, Event.COMMIT_UPDATE);
 
     //when
-    deadCell.changeStateAndNotify();
+    deadCell.changeStateAndCommitUpdate();
     CellState actual = deadCell.getState();
 
     //then
     assertThat(actual).isSameAs(expected);
 
     //verify
-    verify(mediatorMock, times(1)).notify(deadCell);
+    verify(mediatorMock, times(1)).notify(deadCell, Event.COMMIT_UPDATE);
   }
 
   @Test
@@ -111,5 +112,17 @@ public class CellTest {
     //then
     assertThat(actual1).isFalse();
     assertThat(actual2).isTrue();
+  }
+
+  @Test
+  void test_pendingUpdate() {
+    //given
+    doNothing().when(mediatorMock).notify(liveCell, Event.PENDING_UPDATE);
+
+    //when
+    liveCell.pendingUpdate();
+
+    //verify
+    verify(mediatorMock, times(1)).notify(liveCell, Event.PENDING_UPDATE);
   }
 }

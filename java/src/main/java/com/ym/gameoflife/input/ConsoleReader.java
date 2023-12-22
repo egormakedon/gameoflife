@@ -10,13 +10,17 @@ import java.io.InputStreamReader;
 public class ConsoleReader implements AutoCloseable {
   private final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-  public String readTrimmedLine() throws IOException {
-    String line = reader.readLine();
-    return line.trim();
+  public String readTrimmedLine() {
+    try {
+      String line = reader.readLine();
+      return line.trim();
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() throws IOException {
     reader.close();
   }
 }

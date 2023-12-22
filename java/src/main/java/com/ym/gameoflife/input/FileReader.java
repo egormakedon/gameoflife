@@ -12,9 +12,13 @@ import java.util.stream.Stream;
 public class FileReader implements AutoCloseable {
   private final Stream<String> lineStream;
 
-  public FileReader(String filePath) throws IOException {
-    Path path = Paths.get(filePath);
-    this.lineStream = Files.lines(path);
+  public FileReader(String filePath) {
+    try {
+      Path path = Paths.get(filePath);
+      this.lineStream = Files.lines(path);
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 
   public Stream<String> streamOfLines() {
@@ -22,7 +26,7 @@ public class FileReader implements AutoCloseable {
   }
 
   @Override
-  public void close() throws Exception {
+  public void close() {
     lineStream.close();
   }
 }

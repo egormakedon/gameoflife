@@ -6,7 +6,7 @@ import com.ym.gameoflife.entity.Grid;
  * @author Yahor Makedon
  */
 public class GridFileReaderFacade {
-  public Grid read(String filePath) throws Exception {
+  public Grid read(String filePath) {
     try (FileReader fileReader = new FileReader(filePath)) {
       BufferedGridParser parser = new BufferedGridParser();
       fileReader.streamOfLines().forEach(parser::parseLine);

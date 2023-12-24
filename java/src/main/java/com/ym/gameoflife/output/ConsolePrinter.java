@@ -17,8 +17,10 @@ public class ConsolePrinter {
   private static final String INPUT_N = "Input N [3-20]: ";
   private static final String ROW_NOTE = "!!Note: Should be provided `%d` Rows for `%d` Cells (In Total `%d` Cells). Row example: `01`, where `0` - Cell DEAD, `1` - Cell LIVE";
   private static final String INPUT_ROW = "Input Row %d: ";
+  private static final String ITERATION = "Iteration %d:";
   private static final String INPUT_PATH_TO_FILE;
   private static final String FILE_STRUCTURE_EXAMPLE;
+  private static final String LISTEN_NOTE;
 
   static {
     String defaultPath = Paths.get("").toAbsolutePath().normalize() + "/java/data.txt";
@@ -33,6 +35,8 @@ public class ConsolePrinter {
       00000
       """;
     FILE_STRUCTURE_EXAMPLE = "File structure example:\n" + "\"\"\"\n" + fileStructure + "\"\"\"";
+
+    LISTEN_NOTE = "";
   }
 
   private final GridFormatter formatter = new GridFormatter();
@@ -100,6 +104,34 @@ public class ConsolePrinter {
 
   public static void printInputRow(int rowIndex) {
     System.out.printf(INPUT_ROW, rowIndex+1);
+  }
+
+  public static void printListenNote() {
+    final int capacity = 100;
+    StringBuilder sb = new StringBuilder(capacity);
+    sb
+      .append(BORDER).append("\n")
+      .append(LISTEN_NOTE).append("\n")
+      .append(BORDER).append("\n");
+
+    System.out.println(sb);
+  }
+
+  public static void printIteration(int iterationCounter) {
+    System.out.printf(ITERATION + "%n", iterationCounter);
+  }
+
+  public static void clearConsole() {
+    try {
+      String osName = System.getProperty("os.name");
+      ProcessBuilder processBuilder = osName.contains("Windows")
+        ? new ProcessBuilder("cmd", "/c", "cls")
+        : new ProcessBuilder("clear");
+      Process startProcess = processBuilder.inheritIO().start();
+      startProcess.waitFor();
+    } catch (Exception e) {
+      // should be empty
+    }
   }
 
   public void print(Grid grid) {

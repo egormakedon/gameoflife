@@ -1,16 +1,14 @@
 package com.ym.gameoflife.command;
 
-import com.ym.gameoflife.command.impl.BeginCommand;
-import com.ym.gameoflife.command.impl.ConsoleInputCommand;
-import com.ym.gameoflife.command.impl.FileInputCommand;
-import com.ym.gameoflife.command.impl.InitCommand;
+import com.ym.gameoflife.command.impl.*;
 import com.ym.gameoflife.input.ConsoleReader;
 
 /**
  * @author Yahor Makedon
  */
 public enum CommandType implements Command {
-  RUN(null),
+  LISTEN(new ListenCommand()),
+  RUN(new RunCommand(), LISTEN),
   FILE_INPUT(new FileInputCommand()),
   CONSOLE_INPUT(new ConsoleInputCommand()),
   INIT(new InitCommand(), RUN),

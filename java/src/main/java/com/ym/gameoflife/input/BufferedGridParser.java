@@ -12,6 +12,7 @@ import java.util.Set;
  * @author Yahor Makedon
  */
 public class BufferedGridParser {
+  public static final String PREFIX_N_LINE = "n=";
   private static final String EQUAL_DELIMITER = "=";
   private static final String SYMBOL_DELIMITER = "";
   private static final int INIT_N = -1;

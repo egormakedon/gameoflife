@@ -1,9 +1,7 @@
 package com.ym.gameoflife.input;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 /**
@@ -16,6 +14,8 @@ public class FileReader implements AutoCloseable {
     try {
       Path path = Paths.get(filePath);
       this.lineStream = Files.lines(path);
+    } catch (NoSuchFileException e) {
+      throw new IllegalArgumentException(String.format("Invalid filePath=`%s`", filePath), e);
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }

@@ -1,5 +1,6 @@
-package com.ym.gameoflife.controller;
+package com.ym.gameoflife.controller.game;
 
+import com.ym.gameoflife.controller.game.Rule;
 import com.ym.gameoflife.entity.Cell;
 import com.ym.gameoflife.entity.CellFactory;
 import com.ym.gameoflife.entity.CellState;

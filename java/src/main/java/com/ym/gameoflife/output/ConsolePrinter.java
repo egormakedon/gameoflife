@@ -1,8 +1,9 @@
 package com.ym.gameoflife.output;
 
+import com.ym.gameoflife.controller.application.GameManager;
 import com.ym.gameoflife.entity.Grid;
 
-import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 /**
  * @author Yahor Makedon
@@ -18,14 +19,12 @@ public class ConsolePrinter {
   private static final String ROW_NOTE = "!!Note: Should be provided `%d` Rows for `%d` Cells (In Total `%d` Cells). Row example: `01`, where `0` - Cell DEAD, `1` - Cell LIVE";
   private static final String INPUT_ROW = "Input Row %d: ";
   private static final String ITERATION = "Iteration %d:";
-  private static final String INPUT_PATH_TO_FILE;
+  private static final String INPUT_PATH_TO_FILE = "Input path to `data.txt` file or pick pre-loaded one from list above: ";
   private static final String FILE_STRUCTURE_EXAMPLE;
+  private static final String PRE_LOADED_DATA_FILES;
   private static final String LISTEN_NOTE;
 
   static {
-    String defaultPath = Paths.get("").toAbsolutePath().normalize() + "/java/data.txt";
-    INPUT_PATH_TO_FILE = String.format("Input path to `data.txt` file (default %s): ", defaultPath);
-
     String fileStructure = """
       n=5
       00000
@@ -35,6 +34,9 @@ public class ConsolePrinter {
       00000
       """;
     FILE_STRUCTURE_EXAMPLE = "File structure example:\n" + "\"\"\"\n" + fileStructure + "\"\"\"";
+
+    String preLoadedDataFiles = GameManager.streamOfPreLoadedDataFileNames().collect(Collectors.joining(" "));
+    PRE_LOADED_DATA_FILES = "List of pre-loaded data files:\n" + preLoadedDataFiles;
 
     LISTEN_NOTE = "";
   }
@@ -73,8 +75,9 @@ public class ConsolePrinter {
     StringBuilder sb = new StringBuilder(capacity);
     sb
       .append(BORDER).append("\n")
-      .append(FILE_INPUT).append("\n")
-      .append(FILE_STRUCTURE_EXAMPLE).append("\n")
+      .append(FILE_INPUT).append("\n\n")
+      .append(FILE_STRUCTURE_EXAMPLE).append("\n\n")
+      .append(PRE_LOADED_DATA_FILES).append("\n\n")
       .append(INPUT_PATH_TO_FILE);
 
     System.out.print(sb);

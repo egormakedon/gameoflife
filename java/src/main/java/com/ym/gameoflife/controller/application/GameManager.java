@@ -3,31 +3,60 @@ package com.ym.gameoflife.controller.application;
 import com.ym.gameoflife.controller.GameOfLifeFacade;
 import com.ym.gameoflife.entity.Grid;
 
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 /**
  * @author Yahor Makedon
  */
 public final class GameManager {
-  public static final String DEFAULT_FILE_PATH;
+  private static final String PRE_LOADED_DATA_FILE_EXTENSION = ".txt";
+  private static final Set<String> preLoadedDataFileNames = createPreLoadedDataFileNames();
   private static final GameManager instance = new GameManager();
   private final Map<ConfigParameter, Object> config = new HashMap<>();
   private final GameOfLifeFacade gameOfLifeFacade = new GameOfLifeFacade();
   private Task task;
 
-  static {
-    DEFAULT_FILE_PATH = Paths.get("").toAbsolutePath().normalize() + "/java/data.txt";
+  private GameManager() {
   }
 
-  private GameManager() {
+  private static Set<String> createPreLoadedDataFileNames() {
+    List<String> list = Arrays.asList(
+      "block",
+      "beehive",
+      "loaf",
+      "boat",
+      "tub",
+      "blinker",
+      "toad",
+      "beacon",
+      "pulsar",
+      "cross",
+      "clock",
+      "octagon",
+      "kok's_galaxy",
+      "glider",
+      "lwss"
+    );
+    return new LinkedHashSet<>(list);
   }
 
   public static GameManager getInstance() {
     return instance;
+  }
+
+  public static Stream<String> streamOfPreLoadedDataFileNames() {
+    return preLoadedDataFileNames.stream();
+  }
+
+  public static Optional<String> getPreLoadedDataFileName(String input) {
+    if (input == null || input.isEmpty()) {
+      return Optional.empty();
+    }
+    return preLoadedDataFileNames.contains(input)
+      ? Optional.of(input + PRE_LOADED_DATA_FILE_EXTENSION) : Optional.empty();
   }
 
   public void run() {

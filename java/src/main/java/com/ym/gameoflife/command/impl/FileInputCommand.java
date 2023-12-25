@@ -22,14 +22,9 @@ public class FileInputCommand implements Command {
   }
 
   private void readFileAndSetupData(ConsoleReader consoleReader) {
-    String filePath = readOrGetDefaultFilePath(consoleReader);
+    String filePath = consoleReader.readTrimmedLine();
     GridFileReaderFacade gridFileReaderFacade = new GridFileReaderFacade();
     Grid grid = gridFileReaderFacade.read(filePath);
     gameManager.setData(grid);
-  }
-
-  private String readOrGetDefaultFilePath(ConsoleReader consoleReader) {
-    String input = consoleReader.readTrimmedLine();
-    return input != null && input.isEmpty() ? GameManager.DEFAULT_FILE_PATH : input;
   }
 }

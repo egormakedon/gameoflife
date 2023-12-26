@@ -18,6 +18,8 @@ repositories {
 }
 
 dependencies {
+	implementation "org.apache.commons:commons-lang3:$commonsLangVersion"
+
     testImplementation "org.junit.jupiter:junit-jupiter:$jupiterVersion"
 	testImplementation "org.assertj:assertj-core:$assertjVersion"
 	testImplementation "org.mockito:mockito-core:$mockitoVersion"

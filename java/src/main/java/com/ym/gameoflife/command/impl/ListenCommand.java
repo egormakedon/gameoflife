@@ -30,8 +30,8 @@ public class ListenCommand implements Command {
       switch (listenEvent) {
         case EXIT -> handleExitEvent();
         case RESTART -> handleRestartEvent();
-//        case PAUSE -> handlePauseEvent();
-//        case CONTINUE -> handleContinueEvent();
+        case PAUSE -> handlePauseEvent();
+        case CONTINUE -> handleContinueEvent();
         case GRID_ON -> handleGridOnEvent();
         case GRID_OFF -> handleGridOffEvent();
         case DELAY -> handleDelayEvent(input);
@@ -48,20 +48,22 @@ public class ListenCommand implements Command {
     gameManager.exit();
     finishListenCommand();
   }
-
   private void handleRestartEvent() {
     gameManager.restart();
     finishListenCommand();
   }
-
+  private void handlePauseEvent() {
+    gameManager.pauseIterations();
+  }
+  private void handleContinueEvent() {
+    gameManager.continueIterations();
+  }
   private void handleGridOnEvent() {
     gameManager.gridOn();
   }
-
   private void handleGridOffEvent() {
     gameManager.gridOff();
   }
-
   private void handleDelayEvent(String input) {
     int delayMsValue = NumberUtils.toInt(input.substring(1));
     gameManager.setIterationDelayMs(delayMsValue);

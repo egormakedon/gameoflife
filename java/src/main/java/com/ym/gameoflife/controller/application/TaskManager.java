@@ -4,6 +4,7 @@ import com.ym.gameoflife.controller.GameOfLifeFacade;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Yahor Makedon
@@ -61,6 +62,18 @@ final class TaskManager {
     taskThread = null;
   }
 
+  void pauseTask() {
+    if (isTaskNotCreated() || task.isPaused()) {
+      return;
+    }
+    task.pauseOn();
+  }
+  void continueTask() {
+    if (isTaskNotCreated() || task.isNotPaused()) {
+      return;
+    }
+    task.pauseOff();
+  }
   void setIterationDelayMs(int delayMs) {
     if (isTaskNotCreated()) {
       return;
@@ -70,22 +83,24 @@ final class TaskManager {
 
   private final class Task implements Runnable {
     private static final int DEFAULT_DELAY_MS = 1000;
-    private final AtomicBoolean isRunning = new AtomicBoolean(true);
+    private final AtomicBoolean running = new AtomicBoolean(true);
+    private final AtomicBoolean paused = new AtomicBoolean(false);
+    private final AtomicInteger delayMs = new AtomicInteger(DEFAULT_DELAY_MS);
     private final GameOfLifeFacade gameOfLifeFacade;
-    private int delayMs;
 
     Task(GameOfLifeFacade gameOfLifeFacade) {
       this.gameOfLifeFacade = gameOfLifeFacade;
-      delayMs = DEFAULT_DELAY_MS;
     }
 
     @Override
     public void run() {
       try {
         gameOfLifeFacade.print();
-        while (isRunning.get()) {
-          TimeUnit.MILLISECONDS.sleep(delayMs);
+        while (running.get()) {
+          TimeUnit.MILLISECONDS.sleep(delayMs.get());
           gameOfLifeFacade.iterateAndPrint();
+          while (paused.get()) {
+          }
         }
       } catch (Exception e) {
         flushTask();
@@ -94,11 +109,23 @@ final class TaskManager {
     }
 
     void finishTask() {
-      isRunning.set(false);
+      running.set(false);
+      paused.set(false);
     }
-
     void setDelayMs(int delayMs) {
-      this.delayMs = delayMs;
+      this.delayMs.set(delayMs);
+    }
+    boolean isPaused() {
+      return paused.get();
+    }
+    boolean isNotPaused() {
+      return !isPaused();
+    }
+    void pauseOn() {
+      paused.set(true);
+    }
+    void pauseOff() {
+      paused.set(false);
     }
   }
 }

@@ -72,6 +72,12 @@ public final class GameManager {
     gameOfLifeFacade.flushData();
     ConsolePrinter.clearConsole();
   }
+  public void pauseIterations() {
+    taskManager.pauseTask();
+  }
+  public void continueIterations() {
+    taskManager.continueTask();
+  }
   public void gridOn() {
     gameOfLifeFacade.gridOn();
   }

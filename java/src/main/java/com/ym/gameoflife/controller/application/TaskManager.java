@@ -61,6 +61,13 @@ final class TaskManager {
     taskThread = null;
   }
 
+  void setIterationDelayMs(int delayMs) {
+    if (isTaskNotCreated()) {
+      return;
+    }
+    task.setDelayMs(delayMs);
+  }
+
   private final class Task implements Runnable {
     private static final int DEFAULT_DELAY_MS = 1000;
     private final AtomicBoolean isRunning = new AtomicBoolean(true);
@@ -88,6 +95,10 @@ final class TaskManager {
 
     void finishTask() {
       isRunning.set(false);
+    }
+
+    void setDelayMs(int delayMs) {
+      this.delayMs = delayMs;
     }
   }
 }

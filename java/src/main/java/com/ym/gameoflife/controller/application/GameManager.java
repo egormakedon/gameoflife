@@ -78,6 +78,9 @@ public final class GameManager {
   public void gridOff() {
     gameOfLifeFacade.gridOff();
   }
+  public void setIterationDelayMs(int delayMs) {
+    taskManager.setIterationDelayMs(delayMs);
+  }
 
   public void setMode(String input) {
     configManager.setMode(input);

@@ -4,6 +4,7 @@ import com.ym.gameoflife.command.Command;
 import com.ym.gameoflife.controller.application.GameManager;
 import com.ym.gameoflife.controller.application.ListenEvent;
 import com.ym.gameoflife.input.ConsoleReader;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ public class ListenCommand implements Command {
 //        case CONTINUE -> handleContinueEvent();
         case GRID_ON -> handleGridOnEvent();
         case GRID_OFF -> handleGridOffEvent();
-//        case DELAY -> handleDelayEvent();
+        case DELAY -> handleDelayEvent(input);
         default -> throw new UnsupportedOperationException(String.format("ListenEvent=`%s` is not supported", listenEvent));
       }
     }
@@ -59,5 +60,10 @@ public class ListenCommand implements Command {
 
   private void handleGridOffEvent() {
     gameManager.gridOff();
+  }
+
+  private void handleDelayEvent(String input) {
+    int delayMsValue = NumberUtils.toInt(input.substring(1));
+    gameManager.setIterationDelayMs(delayMsValue);
   }
 }

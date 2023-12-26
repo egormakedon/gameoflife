@@ -38,7 +38,18 @@ public class ConsolePrinter {
     String preLoadedDataFiles = GameManager.streamOfPreLoadedDataFileNames().collect(Collectors.joining(" "));
     PRE_LOADED_DATA_FILES = "List of pre-loaded data files:\n" + preLoadedDataFiles;
 
-    LISTEN_NOTE = "";
+    final int capacity = 100;
+    StringBuilder sb = new StringBuilder(capacity);
+    sb
+      .append("List of available commands:").append("\n")
+      .append("`e` - exit").append("\n")
+      .append("`r` - restart").append("\n")
+      .append("`p` - pause").append("\n")
+      .append("`c` - continue").append("\n")
+      .append("`gn` - switch grid on").append("\n")
+      .append("`gf` - switch grid off").append("\n")
+      .append("`dNumber` - set a delay in ms (ex. `d1000`)");
+    LISTEN_NOTE = sb.toString();
   }
 
   private final GridFormatter formatter = new GridFormatter();
@@ -139,5 +150,13 @@ public class ConsolePrinter {
 
   public void print(Grid grid) {
     System.out.println(formatter.format(grid));
+  }
+
+  public void gridOn() {
+    formatter.gridOn();
+  }
+
+  public void gridOff() {
+    formatter.gridOff();
   }
 }

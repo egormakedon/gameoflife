@@ -31,8 +31,17 @@ public class GameOfLifeFacade {
     printer.print(grid);
   }
 
-  public void flush() {
+  public void flushData() {
     setGrid(null);
     iterationCounter = 0;
+    gridOn();
+  }
+
+  public void gridOn() {
+    printer.gridOn();
+  }
+
+  public void gridOff() {
+    printer.gridOff();
   }
 }

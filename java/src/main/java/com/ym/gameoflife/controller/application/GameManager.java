@@ -1,11 +1,11 @@
 package com.ym.gameoflife.controller.application;
 
+import com.ym.gameoflife.Runner;
 import com.ym.gameoflife.controller.GameOfLifeFacade;
 import com.ym.gameoflife.entity.Grid;
+import com.ym.gameoflife.output.ConsolePrinter;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 /**
@@ -15,9 +15,10 @@ public final class GameManager {
   private static final String PRE_LOADED_DATA_FILE_EXTENSION = ".txt";
   private static final Set<String> preLoadedDataFileNames = createPreLoadedDataFileNames();
   private static final GameManager instance = new GameManager();
-  private final Map<ConfigParameter, Object> config = new HashMap<>();
+
+  private final ConfigManager configManager = new ConfigManager();
+  private final TaskManager taskManager = new TaskManager();
   private final GameOfLifeFacade gameOfLifeFacade = new GameOfLifeFacade();
-  private Task task;
 
   private GameManager() {
   }
@@ -42,15 +43,12 @@ public final class GameManager {
     );
     return new LinkedHashSet<>(list);
   }
-
   public static GameManager getInstance() {
     return instance;
   }
-
   public static Stream<String> streamOfPreLoadedDataFileNames() {
     return preLoadedDataFileNames.stream();
   }
-
   public static Optional<String> getPreLoadedDataFileName(String input) {
     if (input == null || input.isEmpty()) {
       return Optional.empty();
@@ -62,48 +60,35 @@ public final class GameManager {
   public void run() {
     Grid grid = getData();
     gameOfLifeFacade.setGrid(grid);
-    task = new Task();
-    startTask(task);
+    taskManager.runNewTask(gameOfLifeFacade);
   }
-
-  private Grid getData() {
-    return (Grid) config.get(ConfigParameter.DATA);
+  public void exit() {
+    taskManager.finishTaskWithoutWaiting();
+    Runner.finish();
   }
-
-  private void startTask(Task task) {
-    Thread thread = new Thread(task);
-    thread.setDaemon(true);
-    thread.start();
+  public void restart() {
+    taskManager.finishTaskWithWaiting();
+    configManager.clearConfig();
+    gameOfLifeFacade.flushData();
+    ConsolePrinter.clearConsole();
+  }
+  public void gridOn() {
+    gameOfLifeFacade.gridOn();
+  }
+  public void gridOff() {
+    gameOfLifeFacade.gridOff();
   }
 
   public void setMode(String input) {
-    config.put(ConfigParameter.MODE, Mode.of(input));
+    configManager.setMode(input);
   }
-
   public Mode getMode() {
-    return (Mode) config.get(ConfigParameter.MODE);
+    return configManager.getMode();
   }
-
   public void setData(Grid grid) {
-    config.put(ConfigParameter.DATA, grid);
+    configManager.setData(grid);
   }
-
-  private final class Task implements Runnable {
-    private static final int DEFAULT_DELAY_MS = 1000;
-    private final AtomicBoolean isRunning = new AtomicBoolean(true);
-    private int delayMs = DEFAULT_DELAY_MS;
-
-    @Override
-    public void run() {
-      try {
-        gameOfLifeFacade.print();
-        while (isRunning.get()) {
-          TimeUnit.MILLISECONDS.sleep(delayMs);
-          gameOfLifeFacade.iterateAndPrint();
-        }
-      } catch (Exception e) {
-        throw new RuntimeException(e.getMessage(), e);
-      }
-    }
+  public Grid getData() {
+    return configManager.getData();
   }
 }

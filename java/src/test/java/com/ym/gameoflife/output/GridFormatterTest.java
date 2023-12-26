@@ -23,11 +23,11 @@ public class GridFormatterTest {
     Grid grid = given_format_createAndGetGrid();
     String expected = """
       -------------
-      | 1 | 0 | 1 |
+      | ■ |   | ■ |
       -------------
-      | 0 | 1 | 0 |
+      |   | ■ |   |
       -------------
-      | 1 | 0 | 1 |
+      | ■ |   | ■ |
       -------------
       """;
 
